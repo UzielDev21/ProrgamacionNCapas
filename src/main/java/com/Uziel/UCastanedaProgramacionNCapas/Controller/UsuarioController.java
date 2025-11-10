@@ -127,9 +127,6 @@ public class UsuarioController {
         try {
             
             Result result = usuarioDAOImplementation.AddAll(usuarios);
-            if (result.correct) {
-                throw new Exception("error al insertar el usuario" + result.errorMessage);
-            }
             model.addAttribute("MsgCorrecto", "Carga Masiva Realizada con exito");
             
         } catch (Exception ex) {
