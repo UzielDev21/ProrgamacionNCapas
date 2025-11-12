@@ -13,7 +13,7 @@ public class ModelMapperConfig {
     public ModelMapper modelMapper(){
         ModelMapper modelMapper = new ModelMapper();
         
-        modelMapper.typeMap(UsuarioJPA.class, Usuario.class);
+        //modelMapper.typeMap(UsuarioJPA.class, Usuario.class);
         
         return modelMapper;
     }

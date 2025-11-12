@@ -94,4 +94,6 @@ public class DireccionJPA {
     public UsuarioJPA getUsuarioJPA() {
         return UsuarioJPA;
     }
+    
+    
 }

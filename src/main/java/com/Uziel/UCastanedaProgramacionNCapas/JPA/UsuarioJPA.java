@@ -24,6 +24,9 @@ public class UsuarioJPA {
     @Column(name = "idusuario", nullable = false)
     private int IdUsuario;
     
+    @Column(name = "username")
+    private String UserName;
+    
     @Column(name = "nombre")
     private String Nombre;
     
@@ -69,9 +72,10 @@ public class UsuarioJPA {
     public UsuarioJPA() {
     }
 
-    public UsuarioJPA(int IdUsuario, String Nombre, String ApellidoPaterno, String ApellidoMaterno, String Email,
+    public UsuarioJPA(int IdUsuario, String UserName, String Nombre, String ApellidoPaterno, String ApellidoMaterno, String Email,
             String Password, Date FechaNacimiento, String Sexo, String Telefono, String Celular, String Curp, String Imagen) {
         this.IdUsuario = IdUsuario;
+        this.UserName = UserName;
         this.Nombre = Nombre;
         this.ApellidoPaterno = ApellidoPaterno;
         this.ApellidoMaterno = ApellidoMaterno;
@@ -91,6 +95,14 @@ public class UsuarioJPA {
 
     public int getIdUsuario() {
         return IdUsuario;
+    }
+    
+    public void setUserName(String UserName){
+        this.UserName = UserName;
+    }
+    
+    public String getUserName(){
+        return UserName;
     }
 
     public void setNombre(String Nombre) {

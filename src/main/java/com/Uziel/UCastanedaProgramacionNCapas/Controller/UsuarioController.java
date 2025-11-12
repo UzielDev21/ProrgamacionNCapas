@@ -351,7 +351,7 @@ public class UsuarioController {
     //---------- CARGAR  FORMULARIO ----------
     @GetMapping("/Add")
     public String Form(Model model) {
-
+//no lo inserto
         Usuario usuario = new Usuario();
         model.addAttribute("Usuario", usuario);
         model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
@@ -426,7 +426,8 @@ public class UsuarioController {
                 Logger.getLogger(UsuarioController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        Result result = usuarioDAOImplementation.Add(usuario);
+        //Result result = usuarioDAOImplementation.Add(usuario);
+        Result resultJPA = usuarioJPADAOImplementation.Add(usuario);
         redirectAttributes.addFlashAttribute("successMessage", "El usuario " + usuario.getUserName() + "se creo con exito.");
         return "redirect:/UsuarioIndex";
     }
