@@ -1,6 +1,8 @@
 package com.Uziel.UCastanedaProgramacionNCapas.DAO;
 
 import com.Uziel.UCastanedaProgramacionNCapas.JPA.DireccionJPA;
+import com.Uziel.UCastanedaProgramacionNCapas.JPA.ColoniaJPA;
+import com.Uziel.UCastanedaProgramacionNCapas.JPA.RolJPA;
 import com.Uziel.UCastanedaProgramacionNCapas.JPA.UsuarioJPA;
 import com.Uziel.UCastanedaProgramacionNCapas.ML.Direccion;
 import com.Uziel.UCastanedaProgramacionNCapas.ML.Result;
@@ -52,10 +54,17 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA {
 
         try {
             UsuarioJPA usuarioJPA = modelMapper.map(usuario, UsuarioJPA.class);
-//            usuarioJPA.DireccionesJPA.get(0).UsuarioJPA = usuarioJPA;
+           
+            RolJPA rolJPA = modelMapper.map(usuario.Rol, RolJPA.class);
+            usuarioJPA.RolJPA = rolJPA;
+           
             List<Direccion> direcciones = usuario.Direcciones;
             usuarioJPA.DireccionesJPA = direcciones.stream().map(direccion -> modelMapper.map(direccion, DireccionJPA.class)).collect(Collectors.toList());
             usuarioJPA.DireccionesJPA.get(0).UsuarioJPA = usuarioJPA;
+            
+            ColoniaJPA coloniaJPA = modelMapper.map(usuario.Direcciones.get(0).Colonia, ColoniaJPA.class);
+            usuarioJPA.DireccionesJPA.get(0).ColoniaJPA = coloniaJPA;
+            
             entityManager.persist(usuarioJPA);
 
             result.correct = true;
@@ -68,4 +77,6 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA {
 
         return result;
     }
+
+    
 }
