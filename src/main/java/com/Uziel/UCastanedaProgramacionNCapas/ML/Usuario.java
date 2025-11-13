@@ -17,7 +17,7 @@ public class Usuario {
     @NotNull(message = "El campo no puede ser Nulo")
     @NotBlank(message = "El campo debe contener informacion")
     @Size(min = 5, max = 18)
-    @Pattern(regexp = "[a-zA-Z0-9_ñ]+$", message = "El campo debe de tener _, Numeros y Letras")
+    @Pattern(regexp = "[a-zA-Z0-9_ñ@$#-]+$", message = "El campo debe de tener _, Numeros y Letras")
     private String UserName;
 
     @NotNull(message = "El Campo no puede quedar vacio")
@@ -68,7 +68,7 @@ public class Usuario {
 
     @NotNull(message = " ")
     @NotBlank(message = "El campo no puede quedar vacio")
-//    @Pattern(regexp = "^([A-Z][AEIOUX][A-Z]{2}\\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\\d])(\\d)$", message = "ingresa una CURP valida")
+    @Pattern(regexp = "\\b[A-Z][AEIOU][A-Z]{2}[0-9]{2}(?:0[1-9]|1[0-2])(?:[1-2][0-9]|0[1-9]|3[0-1])[HM][A-Z]{2}[B-DF-HJ-NP-TV-Z]{3}(?:[0-9]|[A-Z])[0-9]\\b", message = "ingresa una CURP valida")
     private String Curp;
 
     private String Imagen;

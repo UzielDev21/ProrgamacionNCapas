@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html xmlns: th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{Layout}">
@@ -53,8 +52,11 @@
                     <div class='ContenedorImg'>
                         <i class="bi bi-camera btnEditarImagen" style="margin-left: 150px" type="button" id="btnEditarImagen"></i>
 
+<!--                        <img th:if='${UsuarioId.Imagen != null}'
+                             th:src=" 'data:image/' + ${Usuario.extension} + ';base64,' + ${UsuarioId.Imagen}">-->
+
                         <img th:if='${UsuarioId.Imagen != null}'
-                             th:src=" 'data:image/' + ${Usuario.extension} + ';base64,' + ${Usuario.Imagen}">
+                             th:src="@{${#strings.startsWith(UsuarioId.Imagen, 'iVBORw0KGgo')}? 'data:image/png;base64,' + ${UsuarioId.Imagen} : 'data:image/jpg;base64,' + ${UsuarioId.Imagen}}">
 
                         <img th:if='${UsuarioId.Imagen == null}'
                              src=" https://icon-library.com/images/default-user-icon/default-user-icon-18.jpg">
@@ -135,11 +137,6 @@
                             <div>
                                 <label for="Email">Email:</label>
                                 <input class="form-control" type="text" id="Email" placeholder="ejemplo@gmail.com" th:field="*{Email}">
-                            </div>
-
-                            <div>
-                                <label for="Password">Password:</label>
-                                <input class="form-control" type="text" id="Password" th:field="*{Password}">
                             </div>
 
                             <div>
@@ -274,9 +271,17 @@
             <button type="button" class="btn btn-outline-info">Regresar</button>
         </a>
 
-        <script th:if="${ExitoMsg}" th:inline="javascript">
+        <script th:if="${MsgExito}" th:inline="javascript">
                        Swal.fire({
-                               title: [[${ExitoMsg}]],
+                               title: [[${MsgExito}]],
+                               icon: "success",
+                               draggable: true
+                       });
+                        </script>
+
+        <script th:if="${MsgError}" th:inline="javascript">
+                       Swal.fire({
+                               title: [[${MsgError}]],
                                icon: "success",
                                draggable: true
                        });
@@ -391,8 +396,6 @@
                             type: 'GET',
                             dataType: "json",
                             success: function (data, textStatus, jqXHR) {
-//                                Swal.fire( "La dirección ha sido eliminada.", "success");
-//                                $(this).closest('.Direccion-item').remove(); 
                                 Swal.fire({
                                     title: "¡Eliminada!",
                                     text: "La direccion se elimino",
@@ -402,7 +405,6 @@
                                 });
                             },
                             error: function (jqXHR, textStatus, errorThrown) {
-                                // Muestra un mensaje de error con Swal en lugar de alert()
                                 Swal.fire("Error", "No se pudo eliminar la dirección", "error");
                             }
                         });

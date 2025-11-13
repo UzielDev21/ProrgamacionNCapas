@@ -5,7 +5,11 @@ import com.Uziel.UCastanedaProgramacionNCapas.ML.Usuario;
 
 public interface IUsuarioJPA {
     
-    Result GetAll();
+    Result GetAllJPA();
     
-    Result Add(Usuario usuario);
+    Result AddJPA(Usuario usuario);
+    
+    Result UpdateJPA(Usuario usuario);
+    
+    Result GetByIdJPA(int IdUsuario);
 }

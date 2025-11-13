@@ -27,7 +27,7 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA {
     private ModelMapper modelMapper;
 
     @Override
-    public Result GetAll() {
+    public Result GetAllJPA() {
         Result result = new Result();
 
         try {
@@ -48,27 +48,19 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA {
     }
 
     @Override
-    @Transactional 
-    public Result Add(Usuario usuario) {
+    public Result GetByIdJPA(int IdUsuario) {
         Result result = new Result();
 
         try {
-            UsuarioJPA usuarioJPA = modelMapper.map(usuario, UsuarioJPA.class);
-           
-            RolJPA rolJPA = modelMapper.map(usuario.Rol, RolJPA.class);
-            usuarioJPA.RolJPA = rolJPA;
-           
-            List<Direccion> direcciones = usuario.Direcciones;
-            usuarioJPA.DireccionesJPA = direcciones.stream().map(direccion -> modelMapper.map(direccion, DireccionJPA.class)).collect(Collectors.toList());
-            usuarioJPA.DireccionesJPA.get(0).UsuarioJPA = usuarioJPA;
             
-            ColoniaJPA coloniaJPA = modelMapper.map(usuario.Direcciones.get(0).Colonia, ColoniaJPA.class);
-            usuarioJPA.DireccionesJPA.get(0).ColoniaJPA = coloniaJPA;
+            UsuarioJPA usuarioJPA = entityManager.find(UsuarioJPA.class, IdUsuario);
             
-            entityManager.persist(usuarioJPA);
-
+            Usuario usuario = modelMapper.map(usuarioJPA, Usuario.class);
+            RolJPA rolJPA = usuarioJPA.getRolJPA();
+            
+            result.object = usuario;
             result.correct = true;
-            
+
         } catch (Exception ex) {
             result.correct = false;
             result.errorMessage = ex.getLocalizedMessage();
@@ -78,5 +70,65 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA {
         return result;
     }
 
-    
+    @Override
+    @Transactional
+    public Result UpdateJPA(Usuario usuario) {
+        Result result = new Result();
+
+        try {
+            UsuarioJPA usuarioBase = entityManager.find(UsuarioJPA.class, usuario.getIdUsuario());
+
+            UsuarioJPA usuarioJPA = modelMapper.map(usuario, UsuarioJPA.class);
+
+            usuarioJPA.setPassword(usuarioBase.getPassword());
+            usuarioJPA.setImagen(usuarioBase.getImagen());
+            usuarioJPA.setDireccionesJPA(usuarioBase.getDireccionesJPA());
+
+            RolJPA rolJPA = modelMapper.map(usuario.Rol, RolJPA.class);
+            usuarioJPA.RolJPA = rolJPA;
+
+            entityManager.merge(usuarioJPA);
+
+            result.correct = true;
+
+        } catch (Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+
+        return result;
+    }
+
+    @Override
+    @Transactional
+    public Result AddJPA(Usuario usuario) {
+        Result result = new Result();
+
+        try {
+            UsuarioJPA usuarioJPA = modelMapper.map(usuario, UsuarioJPA.class);
+
+            RolJPA rolJPA = modelMapper.map(usuario.Rol, RolJPA.class);
+            usuarioJPA.RolJPA = rolJPA;
+
+            List<Direccion> direcciones = usuario.Direcciones;
+            usuarioJPA.DireccionesJPA = direcciones.stream().map(direccion -> modelMapper.map(direccion, DireccionJPA.class)).collect(Collectors.toList());
+            usuarioJPA.DireccionesJPA.get(0).UsuarioJPA = usuarioJPA;
+
+            ColoniaJPA coloniaJPA = modelMapper.map(usuario.Direcciones.get(0).Colonia, ColoniaJPA.class);
+            usuarioJPA.DireccionesJPA.get(0).ColoniaJPA = coloniaJPA;
+
+            entityManager.persist(usuarioJPA);
+
+            result.correct = true;
+
+        } catch (Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+
+        return result;
+    }
+
 }
