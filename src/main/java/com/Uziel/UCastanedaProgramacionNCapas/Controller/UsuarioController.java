@@ -1,13 +1,19 @@
 package com.Uziel.UCastanedaProgramacionNCapas.Controller;
 
 import com.Uziel.UCastanedaProgramacionNCapas.DAO.CodigoPostalDAOImplementation;
+import com.Uziel.UCastanedaProgramacionNCapas.DAO.CodigoPostalJPADAOImplementation;
 import com.Uziel.UCastanedaProgramacionNCapas.DAO.ColoniaDAOImplementation;
+import com.Uziel.UCastanedaProgramacionNCapas.DAO.ColoniaJPADAOImplementation;
 import com.Uziel.UCastanedaProgramacionNCapas.DAO.DireccionDAOImplementation;
 import com.Uziel.UCastanedaProgramacionNCapas.DAO.DireccionJPADAOImplementation;
 import com.Uziel.UCastanedaProgramacionNCapas.DAO.EstadoDAOImplementation;
+import com.Uziel.UCastanedaProgramacionNCapas.DAO.EstadoJPADAOImplementation;
 import com.Uziel.UCastanedaProgramacionNCapas.DAO.MunicipioDAOImplementation;
+import com.Uziel.UCastanedaProgramacionNCapas.DAO.MunicipioJPADAOImplementation;
 import com.Uziel.UCastanedaProgramacionNCapas.DAO.PaisDAOImplementation;
+import com.Uziel.UCastanedaProgramacionNCapas.DAO.PaisJPADAOImplementation;
 import com.Uziel.UCastanedaProgramacionNCapas.DAO.RolDAOImplementation;
+import com.Uziel.UCastanedaProgramacionNCapas.DAO.RolJPADAOImplementation;
 import com.Uziel.UCastanedaProgramacionNCapas.DAO.UsuarioDAOImplementation;
 import com.Uziel.UCastanedaProgramacionNCapas.DAO.UsuarioJPADAOImplementation;
 import com.Uziel.UCastanedaProgramacionNCapas.ML.Colonia;
@@ -82,17 +88,31 @@ public class UsuarioController {
     @Autowired
     private UsuarioJPADAOImplementation usuarioJPADAOImplementation;
     @Autowired
+    private RolJPADAOImplementation rolJPADAOImplementation;
+    @Autowired
     private DireccionJPADAOImplementation direccionJPADAOImplementation;
+    @Autowired
+    private PaisJPADAOImplementation paisJPADAOImplementation;
+    @Autowired
+    private EstadoJPADAOImplementation estadoJPADAOImplementation;
+    @Autowired
+    private MunicipioJPADAOImplementation municipioJPADAOImplementation;
+    @Autowired
+    private ColoniaJPADAOImplementation coloniaJPADAOImplementation;
+    @Autowired
+    private CodigoPostalJPADAOImplementation codigoPostalJPADAOImplementation;
 
 //------------------------------------------------------------------INDEX------------------------------------------------------------------//
     @GetMapping
     public String Index(Model model) {
 
-        Result result = usuarioDAOImplementation.GetAll();
+//        Result result = usuarioDAOImplementation.GetAll();
+//        model.addAttribute("Usuarios", result.objects);
+//        model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
         Result resultJPA = usuarioJPADAOImplementation.GetAllJPA();
 
         model.addAttribute("Usuarios", resultJPA.objects);
-        model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
+        model.addAttribute("Roles", rolJPADAOImplementation.GetAllJPA().objects);
         model.addAttribute("Usuario", new Usuario());
 
         return "UsuarioIndex";
@@ -104,7 +124,8 @@ public class UsuarioController {
 
         Result result = usuarioDAOImplementation.UsuariosBuscar(usuario);
         model.addAttribute("Usuarios", result.objects);
-        model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
+//        model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
+        model.addAttribute("Roles", rolJPADAOImplementation.GetAllJPA().objects);
         model.addAttribute("Usuario", usuario);
 
         return "UsuarioIndex";
@@ -302,10 +323,13 @@ public class UsuarioController {
 //        Result result = usuarioDAOImplementation.GetById(IdUsuario);
         Result resultJPA = usuarioJPADAOImplementation.GetByIdJPA(IdUsuario);
         
+//        model.addAttribute("UsuarioId", result.object);
+//        model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
+//        model.addAttribute("Paises", paisDAOImplementation.GetAll().objects);
+
         model.addAttribute("UsuarioId", resultJPA.object);
-        model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
-        model.addAttribute("Paises", paisDAOImplementation.GetAll().objects);
-        
+        model.addAttribute("Roles", rolJPADAOImplementation.GetAllJPA().objects);
+        model.addAttribute("Paises", paisJPADAOImplementation.GetAllJPA().objects);
         model.addAttribute("Direccion", new Direccion());
 
         return "UsuarioDetails";
@@ -378,8 +402,10 @@ public class UsuarioController {
 
         Usuario usuario = new Usuario();
         model.addAttribute("Usuario", usuario);
-        model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
-        model.addAttribute("Paises", paisDAOImplementation.GetAll().objects);
+//        model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
+//        model.addAttribute("Paises", paisDAOImplementation.GetAll().objects);
+        model.addAttribute("Roles", rolJPADAOImplementation.GetAllJPA().objects);
+        model.addAttribute("Paises", paisJPADAOImplementation.GetAllJPA().objects);
 
         return "UsuarioForm";
     }
@@ -389,29 +415,31 @@ public class UsuarioController {
     @ResponseBody
     public Result EstadosGetByIdPais(@PathVariable("IdPais") int IdPais) {
 
-        return estadoDAOImplementation.EstadosGetByIdPais(IdPais);
+//        return estadoDAOImplementation.EstadosGetByIdPais(IdPais);
+        return estadoJPADAOImplementation.GetByIdPaisJPA(IdPais);
     }
 
     @GetMapping("Add/Municipios/{IdEstado}")
     @ResponseBody
     public Result MunicipiosGetByIdEstado(@PathVariable("IdEstado") int IdEstado) {
 
-        return municipioDAOImplementation.MunicipioGetByIdEstado(IdEstado);
-
+//        return municipioDAOImplementation.MunicipioGetByIdEstado(IdEstado);
+        return municipioJPADAOImplementation.GetByIdEstadoJPA(IdEstado);
     }
 
     @GetMapping("Add/Colonias/{IdMunicipio}")
     @ResponseBody
     public Result ColoniasGetByIdMunicipio(@PathVariable("IdMunicipio") int IdMunicipio) {
 
-        return coloniaDAOImplementation.ColoniasGetByIdMunicipio(IdMunicipio);
-
+//        return coloniaDAOImplementation.ColoniasGetByIdMunicipio(IdMunicipio);
+        return coloniaJPADAOImplementation.GetByIdMunicipioJPA(IdMunicipio);
     }
 
     @GetMapping("Add/DireccionByCP/{CodigoPostal}")
     @ResponseBody
     public Result CodigoPostalGetDatos(@PathVariable("CodigoPostal") String CodigoPostal) {
-        return codigoPostalDAOImplementation.CodigoPostalGetDatos(CodigoPostal);
+//        return codigoPostalDAOImplementation.CodigoPostalGetDatos(CodigoPostal);
+        return codigoPostalJPADAOImplementation.CodigoPostalGetDatosJPA(CodigoPostal);
     }
 
 //------------------------------------------------------------------POST DEL FORMULARIO------------------------------------------------------------------//
@@ -423,14 +451,16 @@ public class UsuarioController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("Usuario", usuario);
-            model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
-            model.addAttribute("Paises", paisDAOImplementation.GetAll().objects);
+//            model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
+//            model.addAttribute("Paises", paisDAOImplementation.GetAll().objects);
+            model.addAttribute("Roles", rolJPADAOImplementation.GetAllJPA().objects);
+            model.addAttribute("Paises", paisJPADAOImplementation.GetAllJPA().objects);
             if (usuario.Direcciones.get(0).Colonia.Municipio.Estado.Pais.getIdPais() > 0) {
-                model.addAttribute("Estados", estadoDAOImplementation.EstadosGetByIdPais(usuario.Direcciones.get(0).Colonia.Municipio.Estado.Pais.getIdPais()).objects);
+                model.addAttribute("Estados", estadoJPADAOImplementation.GetByIdPaisJPA(usuario.Direcciones.get(0).Colonia.Municipio.Estado.Pais.getIdPais()).objects);
                 if (usuario.Direcciones.get(0).Colonia.Municipio.Estado.getIdEstado() > 0) {
-                    model.addAttribute("Municipios", municipioDAOImplementation.MunicipioGetByIdEstado(usuario.Direcciones.get(0).Colonia.Municipio.Estado.getIdEstado()).objects);
+                    model.addAttribute("Municipios", municipioJPADAOImplementation.GetByIdEstadoJPA(usuario.Direcciones.get(0).Colonia.Municipio.Estado.getIdEstado()).objects);
                     if (usuario.Direcciones.get(0).Colonia.Municipio.getIdMunicipio() > 0) {
-                        model.addAttribute("Colonias", coloniaDAOImplementation.ColoniasGetByIdMunicipio(usuario.Direcciones.get(0).Colonia.Municipio.getIdMunicipio()).objects);
+                        model.addAttribute("Colonias", coloniaJPADAOImplementation.GetByIdMunicipioJPA(usuario.Direcciones.get(0).Colonia.Municipio.getIdMunicipio()).objects);
                     }
                 }
             }
