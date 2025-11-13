@@ -190,7 +190,7 @@
             </table>
         </div>
 
-        <button type="button" class="btn btn-primary" id="btnDireccionAdd" data-bs-toggle="modal" data-bs-target="#FormDireccion">Agregar Nueva Direccion</button>
+        <button type="button" class="btn btn-primary btnDireccionAdd" id="btnDireccionAdd" data-bs-toggle="modal" data-bs-target="#FormDireccion">Agregar Nueva Direccion</button>
 
         <!--Modal-->
         <div class="modal fade" id="FormDireccion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -431,10 +431,7 @@
                         $("#NumeroExterior").val(direccion.numeroExterior);
                         // esta no funciona $("ddlPais").val(direccion.Colonia.Municipio.Estado.Pais.IdPais)
                         $("#ddlColonia").val(direccion.idColonia);
-
-
-
-
+                        
                         $("#FormDireccion").modal("show");
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
@@ -442,6 +439,8 @@
                     }
                 });
             });
+            
+            
 
         </script>
     </body>

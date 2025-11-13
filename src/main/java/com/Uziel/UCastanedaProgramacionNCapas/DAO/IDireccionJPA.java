@@ -9,4 +9,6 @@ public interface IDireccionJPA {
     
     Result DireccionUpdateJPA(Direccion direccion);
     
+    Result DireccionDeleteJPA(int IdDireccion);
+    
 }

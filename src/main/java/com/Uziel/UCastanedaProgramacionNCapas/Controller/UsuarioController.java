@@ -365,8 +365,8 @@ public class UsuarioController {
     @ResponseBody
     public Result DireccionDelete(@PathVariable("IdDireccion") int IdDireccion, Model model) {
 
-        Result result = direccionDAOImplementation.DireccionDelete(IdDireccion);
-
+        //Result result = direccionDAOImplementation.DireccionDelete(IdDireccion);
+        Result result = direccionJPADAOImplementation.DireccionDeleteJPA(IdDireccion);
         return result;
     }
 
