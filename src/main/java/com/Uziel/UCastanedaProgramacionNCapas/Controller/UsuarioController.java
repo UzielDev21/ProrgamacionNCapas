@@ -48,6 +48,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -139,7 +140,7 @@ public class UsuarioController {
     }
     
     
-//------------------------------------------------------------------EECUCIÓN DE CARGA MASIVA------------------------------------------------------------------//
+//------------------------------------------------------------------EJECUCIÓN DE CARGA MASIVA------------------------------------------------------------------//
     @GetMapping("/CargaMasiva/Procesar")
     public String CargaMasiva(HttpSession session, Model model) throws Exception {
         String Path = session.getAttribute("archivoCargaMasiva").toString();
@@ -157,7 +158,8 @@ public class UsuarioController {
         }
         try {
 
-            Result result = usuarioDAOImplementation.AddAll(usuarios);
+//            Result result = usuarioDAOImplementation.AddAll(usuarios);
+            Result resultJP = usuarioJPADAOImplementation.AddAllJPA(usuarios);
             model.addAttribute("MsgCorrecto", "Carga Masiva Realizada con exito");
 
         } catch (Exception ex) {
@@ -242,7 +244,8 @@ public class UsuarioController {
 
         List<Usuario> usuarios = new ArrayList<>();
 
-        try (InputStream fileInputStream = new FileInputStream(archivo); BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));) {
+        try (InputStream inputStream = new FileInputStream(archivo); 
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));) {
             String linea = "";
 
             while ((linea = bufferedReader.readLine()) != null) {
@@ -281,7 +284,7 @@ public class UsuarioController {
     public List<Usuario> LecturaArchivoXLSX(File archivo) {
         List<Usuario> usuarios = new ArrayList<>();
 
-        try (InputStream fileInputStream = new FileInputStream(archivo); XSSFWorkbook workBook = new XSSFWorkbook(fileInputStream)) {
+        try (InputStream inputStream = new FileInputStream(archivo); XSSFWorkbook workBook = new XSSFWorkbook(inputStream)) {
 
             XSSFSheet workSheet = workBook.getSheetAt(0);
 

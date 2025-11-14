@@ -2,6 +2,7 @@ package com.Uziel.UCastanedaProgramacionNCapas.DAO;
 
 import com.Uziel.UCastanedaProgramacionNCapas.ML.Result;
 import com.Uziel.UCastanedaProgramacionNCapas.ML.Usuario;
+import java.util.List;
 
 public interface IUsuarioJPA {
     
@@ -14,4 +15,6 @@ public interface IUsuarioJPA {
     Result GetByIdJPA(int IdUsuario);
     
     Result BuscarUsuarioJPA(Usuario usuario);
+    
+    Result AddAllJPA(List<Usuario> usuarios);
 }

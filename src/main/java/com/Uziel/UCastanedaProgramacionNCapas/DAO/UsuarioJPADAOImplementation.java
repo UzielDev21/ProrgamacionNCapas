@@ -134,6 +134,31 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Result AddAllJPA(List<Usuario> usuarios){
+        Result result = new Result();
+        
+        try {
+            
+            for (Usuario usuario : usuarios) {
+                
+                UsuarioJPA usuarioJPA = modelMapper.map(usuario, UsuarioJPA.class);
+                usuarioJPA.RolJPA = modelMapper.map(usuario.Rol, RolJPA.class);
+                entityManager.persist(usuarioJPA);
+                
+            }
+            
+            result.correct = true;
+        } catch (Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        
+        return result;
+    }
+    
+    @Override
     public Result BuscarUsuarioJPA(Usuario usuario) {
         Result result = new Result();
 
