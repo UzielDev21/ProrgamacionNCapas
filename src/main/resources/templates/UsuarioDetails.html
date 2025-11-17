@@ -5,183 +5,92 @@
         <title>UsuarioDetails</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-        <style>
-            .ContenedorImg{
-                position: relative;
-                top: 20px
-            }
-
-            img{
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
-                max-height: 150px;
-                max-height: 150px;
-                border-radius: 100px
-            }
-            .btnEditar{
-                display: flex;
-                flex-direction: column
-            }
-            .btnEditarDatos{
-                margin-top: 30px
-            }
-        </style>
-
+        <link rel="stylesheet" th:href="@{/css/styleDetails.css}">
     </head>
 
-
-
+    <!-----------------------------------------------------------------------------ENCABEZADOS DE LA TABLA--------------------------------------------------------------------------->
     <body class="container" style="background-color: beige;" layout:fragment="body">
-        <div class="col-12, text-center" style="border: 3px solid #000; border-radius: 15px; font-size: 35px">Detalles de Usuario</div>
+        <div class="col-12 text-center mb-2 mt-5 divEncabezado" id="divEncabezado">Detalles de Usuario</div>
 
-        <div class="table-responsive">
-            <table class="table" style="border: 2px solid #000; border-collapse: separate">
+        <div class="table-responsive divTabla" id="divTabla">
+            <table class="table mb-0 tablaUsuarios" id="tableUsuarios">
 
-                <thead>
+                <thead class="thHeadEncabezados">
                     <tr>
-                        <th class="col-2, text-center" style="background-color: #D5DEEB">USUARIO</th>
-                        <th class="col-5" style="background-color: #D5DEEB"><div class="text-center">Datos del Usuario</div></th>
-                        <th class="col-5" style="background-color: #D5DEEB"><div class="text-center">Datos de Contacto</div></th>
+                        <th class="thUSuario col-2 text-center mg-white border rounded" >USUARIO</th>
+                        <th class="thDatosUSuario col-5 text-center mg-white border rounded">Datos del Usuario</th>
+                        <th class="thDatosContacto col-5 text-center mg-white border rounded">Datos de Contacto</th>
                     </tr>
                 </thead>
 
+                <!-----------------------------------------------------------------------------SECCIÓN DE LA FOTO--------------------------------------------------------------------------->
                 <tbody>
-                <td rowspan="4" class="row-md-4">
-                    <div class='ContenedorImg'>
-                        <i class="bi bi-camera btnEditarImagen" style="margin-left: 150px" type="button" id="btnEditarImagen"></i>
+                <td rowspan="4" class="tdImg row-md-4 mg-white border rounded p-3">
+                    <div class='contenedorImg'>
+                        <i class="bi bi-camera btnEditarImagen" type="button" id="btnEditarImagen"></i>
 
-<!--                        <img th:if='${UsuarioId.Imagen != null}'
-                             th:src=" 'data:image/' + ${Usuario.extension} + ';base64,' + ${UsuarioId.Imagen}">-->
-
-                        <img th:if='${UsuarioId.Imagen != null}'
+                        <img th:if='${UsuarioId.Imagen != null}' alt="ImgPreview"
                              th:src="@{${#strings.startsWith(UsuarioId.Imagen, 'iVBORw0KGgo')}? 'data:image/png;base64,' + ${UsuarioId.Imagen} : 'data:image/jpg;base64,' + ${UsuarioId.Imagen}}">
 
                         <img th:if='${UsuarioId.Imagen == null}'
                              src=" https://icon-library.com/images/default-user-icon/default-user-icon-18.jpg">
 
-                        <div id="DatosImagen" style="display: none" >
+                        <div id="DatosImagen" class="DatosImagen" style="display: none" >
                             <form>
                                 <input type="file" class="form-control mb-2" name="imagenFile" id="imagenFile" accept="image/*">
+                                <i class="bi bi-check-circle btnAceptarImg" id="btnAceptarImg"></i>
                             </form>
                         </div>
 
                         <div class="text-center" ><b><span th:text="${UsuarioId.UserName}"></span></b></div>
 
                         <div class="btnEditar">
-                            <button id="btnEditarDatos" type="button" class ="btn btn-outline-dark btnEditarDatos">Editar Datos</button>
+                            <button id="btnEditarDatos" type="button" class="btn btn-outline-dark btnEditarDatos"
+                                    data-bs-toggle="modal" data-bs-target="#FormUsuario">Editar Datos</button>
                         </div>
 
                     </div>
                 </td>
+                <!-----------------------------------------------------------------------------SECCIÓN DE LOS DATOS--------------------------------------------------------------------------->
 
-                <td>
-                    <div><b>Nombre: </b><span th:text="|${UsuarioId.Nombre} ${UsuarioId.ApellidoPaterno} ${UsuarioId.ApellidoMaterno}|"></span> </div>
+                <td class="tdDatosUSuario mg-white border rounded p-3">
+                    <div><b>Nombre: </b><span th:text="|${UsuarioId.Nombre} ${UsuarioId.ApellidoPaterno} ${UsuarioId.ApellidoMaterno}|"></span></div>
                     <div><b>Sexo: </b><span th:text="${UsuarioId.Sexo}"></span></div>
                     <div><b>Curp: </b><span th:text="${UsuarioId.Curp}"></span></div>
                     <div><b>Fecha de Nacimiento: </b><span th:text="${UsuarioId.FechaNacimiento}"></span></div>
                     <div><b>Rol: </b><span th:text="${UsuarioId.Rol.NombreRol}"></span></div>
                 </td>
 
-                <td>
+                <td class="tdDatosContacto mg-white border rounded p-3">
                     <div><b>Email: </b><span th:text="${UsuarioId.Email}"></span></div>
                     <div><b>Password: </b><span th:text="${UsuarioId.Password}"></span></div>
                     <div><b>Telefono: </b><span th:text="${UsuarioId.Telefono}"></span></div>
                     <div><b>Celular: </b><span th:text="${UsuarioId.Celular}"></span></div>
                 </td>
 
-                <tr style="display: none" id='DatosEditar'>
-                    <td colspan="2">
-                        <form method="POST" th:action="@{/UsuarioIndex/Details}" th:object="${UsuarioId}" enctype="multipart/form-data">
-
-                            <input  type="hidden" id="IdUsuario" name="IdUsuario" th:field="*{IdUsuario}" style="height: 5px; width: 5px;" >
-
-                            <div class="col-md-4">
-                                <input class="form-control" type="text" id="UserName" name="UserName" placeholder="UserName" th:field="*{UserName}">
-                            </div>
-
-                            <div class="col-md-4">
-                                <label for="Nombre">Nombre:</label>
-                                <input class="form-control" type="text" id="Name" name="Nombre" placeholder="Nombre" th:field="*{Nombre}">
-                            </div>
-
-                            <div class="col-md-4">
-                                <label for="ApellidoPaterno">Apellido Paterno:</label>
-                                <input class="form-control" type="text" id="ApellidoPaterno"  placeholder="Apellido Paterno" th:field="*{ApellidoPaterno}">
-                            </div>
-
-                            <div class="col-md-4">
-                                <label for="ApellidoMaterno">Apellido Materno:</label>
-                                <input class="form-control" type="text" id="ApellidoMaterno"  placeholder="Apellido Materno" th:field="*{ApellidoMaterno}">
-                            </div>
-
-                            <div>
-                                <label for="FechaNacimiento">Seleccione su fecha de nacimiento</label>
-                                <input class="form-control" type="date" id="FechaNacimiento" name="FechaNacimiento" th:field="*{FechaNacimiento}">
-                            </div>
-
-                            <div>
-                                <div for="Sexo">Sexo:</div>
-                                <input type="radio" id="SexoH" name="Sexo" value="H " th:field="*{Sexo}">
-                                <label for="SexoH">H</label>
-                                <input type="radio" id="SexoM" name="Sexo" value="M " th:field="*{Sexo}">
-                                <label for="SexoM">M</label>
-                            </div>                   
-
-                            <div>
-                                <label for="Curp">Curp: </label>
-                                <input class="form-control" type="text" id="Curp" name="Curp" placeholder="CAJU020521HMCSSZA4" th:field="*{Curp}">
-                            </div>
-
-                            <div>
-                                <label for="Email">Email:</label>
-                                <input class="form-control" type="text" id="Email" placeholder="ejemplo@gmail.com" th:field="*{Email}">
-                            </div>
-
-                            <div>
-                                <label for="Telefono">Telefono: </label>
-                                <input class="form-control" type="text" id="Telefono" name="Telefono" placeholder="+571 5535804067" th:field="*{Telefono}"> 
-                            </div>
-
-                            <div>
-                                <label for="Celular">Celular: </label>
-                                <input class="form-control" type="text" id="Celular" name="Celular" placeholder="+52 5580406030" th:field="*{Celular}">
-                            </div>
-
-                            <div>
-                                <label for="IdRol">Selecciona tu Rol: </label>
-                                <select class="form-select" aria-label="Default select example" name="IdRol" id="IdRol" th:field="*{Rol.IdRol}" >
-                                    <option value=0> Escoge una opcion </option>
-                                    <option th:each="rol : ${Roles}" th:value="${rol.IdRol}" th:text="${rol.NombreRol}"></option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-outline-success">Actualizar Datos</button>
-                        </form>
-                    </td>
+                <!-----------------------------------------------------------------------------DATOS DE DIRECCIÓN--------------------------------------------------------------------------->
+                <tr>
+                    <td class="tdDireciones mg-white border rounded" colspan="2"><div class="text-center"><b>Direcciones del Usuario</b></div></td>
                 </tr>
 
-                <tr>
-                    <td style="background-color: #D5DEEB" colspan="2"><div class="text-center"><b>Direcciones del Usuario</b></div></td>
-                </tr>
+                <tr class="trDireccion">
+                    <td class="tdDireccion Direccion-item overflow-auto mg-white border rounded" colspan="2">
+                        <div th:each="Direccion, iterStat : ${UsuarioId.Direcciones}"th:attr="data-id=${Direccion.IdDireccion}">
 
-                <!--Apartado de direcciones-->
-                <tr>
-                    <td colspan="2">
-                        <div th:each="Direccion, iterStat : ${UsuarioId.Direcciones}" class="Direccion-item" th:attr="data-id=${Direccion.IdDireccion}">
-                            <div th:utext="|Direccion ${iterStat.index + 1}" style="text-align: center">Dirección 1</div>
-                            <div class=""><b>Calle: </b><span th:text="${Direccion.Calle}"></span></div>
-                            <div class=""><b>Numero Interior: </b><span th:text="${Direccion.NumeroInterior}"></span></div>
-                            <div class=""><b>Numero Exterior: </b><span th:text="${Direccion.NumeroExterior}"></span></div>
-                            <div style="margin-bottom: 15px"><b>Colonia: </b><span th:text="${Direccion.Colonia.NombreColonia}"></span></div>
+                            <div th:utext="|Direccion ${iterStat.index + 1}" class="text-center">Dirección</div>
+                            <div class="divCalle"><b>Calle: </b><span th:text="${Direccion.Calle}"></span></div>
+                            <div class="divNumeroInt"><b>Numero Interior: </b><span th:text="${Direccion.NumeroInterior}"></span></div>
+                            <div class="divNumerExt"><b>Numero Exterior: </b><span th:text="${Direccion.NumeroExterior}"></span></div>
+                            <div class="divColonia" style="margin-bottom: 15px"><b>Colonia: </b><span th:text="${Direccion.Colonia.NombreColonia}"></span></div>
 
-                            <div style="display:flex; flex-direction:column; align-items:center; gap:13px;">
+                            <div class="divBtnAcciones" style="display:flex; flex-direction:column; align-items:center; gap:13px;">
                                 <div>
-                                    <button type="button" class ="btn btn-outline-warning btnEditarDireccion" th:attr="data-id=${Direccion.IdDireccion}">Editar Direccion</button>
+                                    <button type="button" class ="btn btn-outline-warning btnEditarDireccion mb-4" th:attr="data-id=${Direccion.IdDireccion}">Editar Direccion</button>
 
-                                    <button type="button" class ="btn btn-outline-danger btnEliminarDireccion" th:attr="data-id=${Direccion.IdDireccion}">Eliminar Direccion</button>
+                                    <button type="button" class ="btn btn-outline-danger btnEliminarDireccion mb-4" th:attr="data-id=${Direccion.IdDireccion}">Eliminar Direccion</button>
                                 </div>
                             </div>
+
                         </div>
                     </td>
                 </tr>
@@ -190,19 +99,129 @@
             </table>
         </div>
 
-        <button type="button" class="btn btn-primary btnDireccionAdd" id="btnDireccionAdd" data-bs-toggle="modal" data-bs-target="#FormDireccion">Agregar Nueva Direccion</button>
-
-        <!--Modal-->
-        <div class="modal fade" id="FormDireccion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <!-----------------------------------------------------------------------------MODAL EDITAR USUARIO--------------------------------------------------------------------------->
+        <div class="modal fade" id="FormUsuario" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1" aria_labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="AgregarDireccionLabel">Direccion</h5>
-                    </div>
-                    <div class="modal-body">
-                        <form method="POST" th:action="@{/UsuarioIndex/DetailsDireccion/{IdUsuario} (IdUsuario = ${UsuarioId.IdUsuario})}" th:object="${Direccion}" enctype="multipart/form-data">
 
-                            <input  id="IdUsuario"  name="IdUsuario" th:value="${UsuarioId.IdUsuario}">
+                    <div class="modal-header modalHeaderUsuario" style="background-color: black;">
+                        <h5 style="color: white;">Editar Datos</h5>
+                        <button type="button" class="btn btn-outline-light ms-auto" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i></button>
+                    </div>
+
+                    <form method="POST" th:action="@{/UsuarioIndex/Details}" th:object="${UsuarioId}" enctype="multipart/form-data">
+                        <div class="modal-body">
+
+                            <input  type="hidden" id="IdUsuario" name="IdUsuario" th:field="*{IdUsuario}" style="height: 5px; width: 5px;" >
+
+                            <div class="row mb-2">
+
+                                <div class="col-md-6">
+                                    <label for="Nombre">UserName:</label>
+                                    <input class="form-control" type="text" id="UserName" name="UserName" placeholder="UserName" th:field="*{UserName}">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="IdRol">Selecciona tu Rol: </label>
+                                    <select class="form-select" aria-label="Default select example" name="IdRol" id="IdRol" th:field="*{Rol.IdRol}" >
+                                        <option value=0> Escoge una opcion </option>
+                                        <option th:each="rol : ${Roles}" th:value="${rol.IdRol}" th:text="${rol.NombreRol}"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>Datos del usuario</div>
+                            <div class="divFormDatos card p-3 mb-3">
+                                <div class="row mb-2">
+
+                                    <div class="col-md-4">
+                                        <label for="Nombre">Nombre:</label>
+                                        <input class="form-control" type="text" id="Name" name="Nombre" placeholder="Nombre" th:field="*{Nombre}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="ApellidoPaterno">Apellido Paterno:</label>
+                                        <input class="form-control" type="text" id="ApellidoPaterno"  placeholder="Apellido Paterno" th:field="*{ApellidoPaterno}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="ApellidoMaterno">Apellido Materno:</label>
+                                        <input class="form-control" type="text" id="ApellidoMaterno"  placeholder="Apellido Materno" th:field="*{ApellidoMaterno}">
+                                    </div>
+
+                                </div>
+
+                                <div class="row mt-2">
+                                    <div class="col-md-4">
+                                        <label class="" for="FechaNacimiento">Fecha nacimiento</label>
+                                        <input class="form-control" type="date" id="FechaNacimiento" name="FechaNacimiento" th:field="*{FechaNacimiento}">
+                                    </div>
+
+                                    <div class="col-md-5">
+                                        <label for="Curp">Curp: </label>
+                                        <input class="form-control" type="text" id="Curp" name="Curp" placeholder="CAJU020521HMCSSZA4" th:field="*{Curp}">
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div for="Sexo" class="mt-1">Sexo:</div>
+                                        <input type="radio" id="SexoH" name="Sexo" value="H " th:field="*{Sexo}">
+                                        <label for="SexoH">H</label>
+                                        <input type="radio" id="SexoM" name="Sexo" value="M " th:field="*{Sexo}">
+                                        <label for="SexoM">M</label>
+                                    </div>              
+                                </div>
+                            </div>
+
+                            <div>Datos de Contacto</div>
+                            <div class="divFormContacto card p-3"> 
+
+                                <div class="mb-2">
+                                    <label for="Email">Email:</label>
+                                    <input class="form-control" type="text" id="Email" placeholder="ejemplo@gmail.com" th:field="*{Email}">
+                                </div>
+
+                                <div class="row mt-2">
+
+                                    <div class="col-md-6">
+                                        <label for="Telefono">Telefono: </label>
+                                        <input class="form-control" type="text" id="Telefono" name="Telefono" placeholder="+571 5535804067" th:field="*{Telefono}"> 
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="Celular">Celular: </label>
+                                        <input class="form-control" type="text" id="Celular" name="Celular" placeholder="+52 5580406030" th:field="*{Celular}">
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer" style="max-height: auto; max-width: auto;">
+                            <button type="submit" class="btn btn-outline-dark"><b>GUARDAR   </b><i class="bi bi-save"></i></button>
+                        </div>
+                    </form>
+
+
+                </div>
+            </div>
+        </div>
+
+        <!-----------------------------------------------------------------------------MODAL CREAR O EDITAR DIRECCION--------------------------------------------------------------------------->
+        <button type="button" class="btn btn-outline-primary btnDireccionAdd" id="btnDireccionAdd" 
+                data-bs-toggle="modal" data-bs-target="#FormDireccion">Agregar Nueva Direccion</button>
+
+        <div class="modal fade" id="FormDireccion" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header modalHeaderDireccion" id="modalHeaderDireccion">
+                        <h5 class="modal-title" id="AgregarDireccionLabel">Direccion</h5>
+                        <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+<!-----------------------------------------------------------------------------FORMULARIO PARA EDITAR DIRECCIÓN--------------------------------------------------------------------------->                    
+                    <form method="POST" th:action="@{/UsuarioIndex/DetailsDireccion/{IdUsuario} (IdUsuario = ${UsuarioId.IdUsuario})}" th:object="${Direccion}" enctype="multipart/form-data">
+                        <div class="modal-body">
+
+                            <input  id="IdUsuario" type="hidden" name="IdUsuario" th:value="${UsuarioId.IdUsuario}">
                             <input  id="IdDireccion"  name="IdDireccion" >
 
                             <div class="col-md-5">
@@ -252,89 +271,79 @@
                                 </select>
                             </div>
 
-                            <div>
-                                <button type="submit" class="btn btn-primary" id="GuardarDireccion">Guardar</button>
-                                <button type="submit" class="btn btn-primary" id="EditarDireccion">Editar</button>
-                            </div>    
 
-                        </form>
-                    </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-outline-primary btnGuardarDireccion" id="btnGuardarDireccionNew">Guardar</button>
+                            <button type="submit" class="btn btn-outline-warning btnEditarDireccion" id="btnEditarDireccionOld">Editar</button>
+                        </div>
+
+                    </form>
+
+
+
                 </div>
             </div>
         </div>
 
         <a th:href="@{/UsuarioIndex}">
-            <button type="button" class="btn btn-outline-info">Regresar</button>
+            <button type="button" class="btn btn-outline-danger">Regresar</button>
         </a>
-
+        <!-----------------------------------------------------------------------------ALERTAS DE USUARIO--------------------------------------------------------------------------->
         <script th:if="${MsgExito}" th:inline="javascript">
                        Swal.fire({
-                               title: [[${MsgExito}]],
-                               icon: "success",
-                               draggable: true
+                           title: [[${MsgExito}]],
+                                   icon: "success",
+                                   draggable: true
                        });
-                        </script>
+        </script>
 
         <script th:if="${MsgError}" th:inline="javascript">
                        Swal.fire({
-                               title: [[${MsgError}]],
-                               icon: "success",
-                               draggable: true
+                           title: [[${MsgError}]],
+                                   icon: "success",
+                                   draggable: true
                        });
-                        </script>
+        </script>
 
+<!-----------------------------------------------------------------------------ACCIÓN DE EDITAR --------------------------------------------------------------------------->
         <script>
-            $(document).ready(function () {
-                $("#btnEditarDatos").click(function () {
-                    var text = $(this).text();
 
-                    if (text === 'Editar Datos') {
-                        $(this).text('Ocultar datos');
-                        $("#DatosEditar").toggle();
-                    } else {
-                        $(this).text('Editar Datos');
-                        $("#DatosEditar").toggle();
-                    }
-
-                });
-            });
 
             $(document).ready(function () {
                 $("#btnEditarImagen").click(function () {
-                    $("#DatosImagen").toggle();
-                });
+                $("#DatosImagen").toggle();
+                    });
             });
-
-
+<!-----------------------------------------------------------------------------CARGA DE LOS DDL--------------------------------------------------------------------------->
             $(document).ready(function () {
                 $("#ddlPais").change(function () {
-                    $.ajax({
-                        type: 'GET',
-                        url: "/UsuarioIndex/Add/Estados/" + $("#ddlPais").val(),
-                        dataType: "json",
-                        success: function (data, textStatus, jqXHR) {
+                $.ajax({
+                    type: 'GET',
+                    url: "/UsuarioIndex/Add/Estados/" + $("#ddlPais").val(),
+                    dataType: "json",
+                    success: function (data, textStatus, jqXHR) {
 
-                            $("#ddlEstado").empty();
-                            $("#ddlMunicipio").empty();
-                            $("#ddlColonia").empty();
-                            $("#ddlEstado").append("<option value=0> Escoge una opcion </option>");
-                            $("#ddlMunicipio").append("<option value=0> Escoge una opcion </option>");
-                            $("#ddlColonia").append("<option value=0> Escoge una opcion </option>");
+                        $("#ddlEstado").empty();
+                        $("#ddlMunicipio").empty();
+                        $("#ddlColonia").empty();
+                        $("#ddlEstado").append("<option value=0> Escoge una opcion </option>");
+                        $("#ddlMunicipio").append("<option value=0> Escoge una opcion </option>");
+                        $("#ddlColonia").append("<option value=0> Escoge una opcion </option>");
                             $.each(data.objects, function (i, estado) {
-                                $("#ddlEstado").append("<option value = " + estado.idEstado + ">" + estado.nombre + "</option>");
-                            });
-                        },
-                        error: function (jqXHR, textStatus, errorThrown) {
-                            alert("No hay información :c ");
+                            $("#ddlEstado").append("<option value = " + estado.idEstado + ">" + estado.nombre + "</option>");
+                                            });
+                            },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("No hay información :c ");
                         }
                     });
                 });
             });
 
+<!-----------------------------------------------------------------------------DDL ESTADO--------------------------------------------------------------------------->
             $(document).ready(function () {
                 $("#ddlEstado").change(function () {
                     $.ajax({
@@ -356,6 +365,7 @@
                 });
             });
 
+<!-----------------------------------------------------------------------------DDL MUNICIPIO--------------------------------------------------------------------------->
             $(document).ready(function () {
                 $("#ddlMunicipio").change(function () {
                     $.ajax({
@@ -377,7 +387,7 @@
                 });
             });
 
-
+<!-----------------------------------------------------------------------------ELIMINAR DIRECCION--------------------------------------------------------------------------->
             $(document).on("click", ".btnEliminarDireccion", function () {
                 const idDireccionDelete = $(this).attr("data-id");
 
@@ -409,13 +419,20 @@
                             }
                         });
                     }
-                });
+            });
             });
 
-
-
-
-            $(document).on("click", ".btnEditarDireccion", function () {
+            
+            $(document).on("click", ".btnDireccionAdd", function() {
+                
+                $("#modalHeaderDireccion").css("background-color","22B7F2");
+                $("#btnEditarDireccionOld").hide();
+                $("#btnGuardarDireccionNew").show();
+                
+            });
+            
+<!-----------------------------------------------------------------------------CARGAR LOS DATOS EN EL MODAL--------------------------------------------------------------------------->
+$(document).on("click", ".btnEditarDireccion[data-id]", function () {
                 const idDireccion = $(this).attr("data-id");
                 console.log(idDireccion);
                 $.ajax({
@@ -425,12 +442,18 @@
                     success: function (data, textStatus, jqXHR) {
                         const direccion = data.object;
 
+                        $("#modalHeaderDireccion").css("background-color","orange");
+                        $("#btnGuardarDireccionNew").hide();
+                        $("#btnEditarDireccionOld").show();
+                        
                         $("#IdDireccion").val(direccion.idDireccion);
                         $("#Calle").val(direccion.calle);
                         $("#NumeroInterior").val(direccion.numeroInterior);
                         $("#NumeroExterior").val(direccion.numeroExterior);
-                        // esta no funciona $("ddlPais").val(direccion.Colonia.Municipio.Estado.Pais.IdPais)
-                        $("#ddlColonia").val(direccion.idColonia);
+                        $("#ddlPais").val(direccion.colonia.municipio.estado.pais.idPais);
+                        $("#ddlEstado").val(direccion.colonia.municipio.estado.idEstado);
+                        $("#ddlMunicipio").val(direccion.colonia.municipio.idMunicipio);
+                        $("#ddlColonia").val(direccion.colonia.idColonia);
                         
                         $("#FormDireccion").modal("show");
                     },
@@ -438,10 +461,9 @@
                         alert("No hay datos");
                     }
                 });
-            });
-            
-            
-
+});
         </script>
+  
+        
     </body>
 </html>
