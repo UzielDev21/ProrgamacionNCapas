@@ -119,6 +119,21 @@ public class UsuarioController {
         return "UsuarioIndex";
     }
 
+    @GetMapping("/DeleteUsuario/{IdUsuario}")
+    public String DeleteUsuario(@PathVariable("IdUsuario") int IdUsuario, RedirectAttributes redirectAttributes) {
+
+        Result resultJPA = new Result();
+
+        if (resultJPA != null) {
+            resultJPA = usuarioJPADAOImplementation.DeleteJPA(IdUsuario);
+            redirectAttributes.addFlashAttribute("MsgDeleteSuccess", "Se elimino el dato correctamente");
+        } else {
+            redirectAttributes.addFlashAttribute("MsgDeleteError", "No se pudo eliminar el Usuario");
+        }
+
+        return "redirect:/UsuarioIndex";
+    }
+
 //------------------------------------------------------------------BUSCAR USUARIO------------------------------------------------------------------//
     @PostMapping()
     public String BuscarUsuario(@ModelAttribute("Usuario") Usuario usuario, Model model) {
@@ -138,8 +153,7 @@ public class UsuarioController {
     public String CargaMasiva() {
         return "CargaMasiva";
     }
-    
-    
+
 //------------------------------------------------------------------EJECUCIÓN DE CARGA MASIVA------------------------------------------------------------------//
     @GetMapping("/CargaMasiva/Procesar")
     public String CargaMasiva(HttpSession session, Model model) throws Exception {
@@ -244,8 +258,7 @@ public class UsuarioController {
 
         List<Usuario> usuarios = new ArrayList<>();
 
-        try (InputStream inputStream = new FileInputStream(archivo); 
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));) {
+        try (InputStream inputStream = new FileInputStream(archivo); BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));) {
             String linea = "";
 
             while ((linea = bufferedReader.readLine()) != null) {
@@ -326,17 +339,49 @@ public class UsuarioController {
 
 //        Result result = usuarioDAOImplementation.GetById(IdUsuario);
         Result resultJPA = usuarioJPADAOImplementation.GetByIdJPA(IdUsuario);
-        
+
 //        model.addAttribute("UsuarioId", result.object);
 //        model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
 //        model.addAttribute("Paises", paisDAOImplementation.GetAll().objects);
-
         model.addAttribute("UsuarioId", resultJPA.object);
         model.addAttribute("Roles", rolJPADAOImplementation.GetAllJPA().objects);
         model.addAttribute("Paises", paisJPADAOImplementation.GetAllJPA().objects);
         model.addAttribute("Direccion", new Direccion());
 
         return "UsuarioDetails";
+    }
+    
+//------------------------------------------------------------------ACTUALIZAR IMAGEN------------------------------------------------------------------//
+    @PostMapping("/Details/Imagen/{IdUsuario}")
+    public String UpdateImagen(@PathVariable int IdUsuario, RedirectAttributes redirectAttributes,
+                               @RequestParam("imagenFile") MultipartFile multipartFile){
+
+        try {
+            
+            if (multipartFile != null && !multipartFile.isEmpty()) {
+                String originalName = multipartFile.getOriginalFilename();
+                if (originalName != null && originalName.contains(".")) {
+                    
+                    String extension = originalName.split("\\.")[1];
+                    
+                    if (extension.equalsIgnoreCase("jpg") || extension.equalsIgnoreCase("png")) {
+                        byte[] byteImagen = multipartFile.getBytes();
+                        String imagenBase64 = Base64.getEncoder().encodeToString(byteImagen);
+                        
+                        usuarioJPADAOImplementation.UpdateImagenJPA(IdUsuario, imagenBase64);
+                        redirectAttributes.addFlashAttribute("MsgSuccessImagen", "La imagen se actualizo correctamente");
+                    }else{
+                        redirectAttributes.addFlashAttribute("MsgErrorImagen", "Solo se pueden ingresar png o jpg");
+                    }
+                    
+                }
+            }
+            
+        } catch (IOException ex) {
+            redirectAttributes.addFlashAttribute("MsgError", "Error al procesar la imagen" + ex.getMessage());
+        }
+        
+        return "redirect:/UsuarioIndex/Details/" + IdUsuario;
     }
 
 //------------------------------------------------------------------ACTUALIZAR USUARIO DETAILS------------------------------------------------------------------//
@@ -348,6 +393,9 @@ public class UsuarioController {
 
         return "redirect:/UsuarioIndex/Details/" + usuario.getIdUsuario();
     }
+    
+    
+    
 
 //------------------------------------------------------------------INSERTAR O ACTUALIZAR NUEVA DIRECCION DETAILS------------------------------------------------------------------//
     @PostMapping("/DetailsDireccion/{IdUsuario}")
@@ -355,37 +403,37 @@ public class UsuarioController {
             BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
         if (direccion.getIdDireccion() == 0) {
-            
+
 //            Result result = DireccionDAOImplementation.DireccionAdd(direccion, IdUsuario);
             Result resultJPA = direccionJPADAOImplementation.DireccionAddJPA(direccion, IdUsuario);
-            
+
             if (resultJPA.correct) {
                 redirectAttributes.addFlashAttribute("MsgExito", "Se agrego correctamente la Direccion");
             } else {
                 redirectAttributes.addFlashAttribute("MsgError", "No se agrego la direccion " + resultJPA.errorMessage);
             }
-            
+
         } else {
             //Result result = DireccionDAOImplementation.DireccionUpdate(direccion, IdUsuario);
             Result resultJPA = direccionJPADAOImplementation.DireccionUpdateJPA(direccion);
-            
+
             if (resultJPA.correct) {
                 redirectAttributes.addFlashAttribute("MsgExito", "Se edito correctamente la Direccion");
             } else {
                 redirectAttributes.addFlashAttribute("MsgError", "No se pudo editar la direccion " + resultJPA.errorMessage);
             }
-            
+
         }
         return "redirect:/UsuarioIndex/Details/" + IdUsuario;
     }
-    
+
 //------------------------------------------------------------------CARGA DIRECCIONES DETAILS------------------------------------------------------------------//
     @GetMapping("Details/Direccion/{IdDireccion}")
     @ResponseBody
     public Result getDireccion(@PathVariable("IdDireccion") int IdDireccion) {
         //Result result = direccionDAOImplementation.DireccionGetbyId(IdDireccion);
         //return direccionDAOImplementation.DireccionGetbyId(IdDireccion);
-        
+
         Result resultJPA = direccionJPADAOImplementation.DireccionGetByIdJPA(IdDireccion);
         return direccionJPADAOImplementation.DireccionGetByIdJPA(IdDireccion);
     }

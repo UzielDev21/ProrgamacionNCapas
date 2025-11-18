@@ -12,6 +12,10 @@ public interface IUsuarioJPA {
     
     Result UpdateJPA(Usuario usuario);
     
+    Result UpdateImagenJPA(int IdUsuario, String imagenBase64);
+    
+    Result DeleteJPA(int IdUsuario);
+    
     Result GetByIdJPA(int IdUsuario);
     
     Result BuscarUsuarioJPA(Usuario usuario);

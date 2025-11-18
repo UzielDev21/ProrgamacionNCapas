@@ -101,6 +101,45 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA {
 
         return result;
     }
+    
+    @Override
+    @Transactional
+    public Result UpdateImagenJPA(int IdUsuario, String imagenBase64){
+        Result result = new Result();
+        
+        try {
+            UsuarioJPA usuarioBase = entityManager.find(UsuarioJPA.class, IdUsuario);
+//            UsuarioJPA usuarioJPA = modelMapper.map(usuario, UsuarioJPA.class);
+//            
+            usuarioBase.setImagen(imagenBase64);
+
+//            usuarioJPA.setUserName(usuarioBase.getUserName());
+//            usuarioJPA.setNombre(usuarioBase.getNombre());
+//            usuarioJPA.setApellidoPaterno(usuarioBase.getApellidoPaterno());
+//            usuarioJPA.setApellidoMaterno(usuarioBase.getApellidoMaterno());
+//            usuarioJPA.setEmail(usuarioBase.getEmail());
+//            usuarioJPA.setPassword(usuarioBase.getPassword());
+//            usuarioJPA.setFechaNacimiento(usuarioBase.getFechaNacimiento());
+//            usuarioJPA.setSexo(usuarioBase.getSexo());
+//            usuarioJPA.setTelefono(usuarioBase.getTelefono());
+//            usuarioJPA.setCelular(usuarioBase.getCelular());
+//            usuarioJPA.setCurp(usuarioBase.getCurp());
+//            usuarioJPA.setDireccionesJPA(usuarioBase.getDireccionesJPA());
+            
+//            RolJPA rolJPA = modelMapper.map(usuario.Rol, RolJPA.class);
+//            usuarioJPA.RolJPA = rolJPA;
+            
+            entityManager.merge(usuarioBase);
+            
+            result.correct = true;
+        } catch (Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        
+        return result;
+    }
 
     @Override
     @Transactional
@@ -133,6 +172,26 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA {
         return result;
     }
 
+    @Override
+    @Transactional
+    public Result DeleteJPA(int IdUsuario){
+        Result result = new Result();
+        
+        try {
+            UsuarioJPA usuarioJPA = entityManager.find(UsuarioJPA.class, IdUsuario);
+            entityManager.remove(usuarioJPA);
+            
+            result.correct = true;
+            
+        } catch (Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        
+        return result;
+    }
+    
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result AddAllJPA(List<Usuario> usuarios){

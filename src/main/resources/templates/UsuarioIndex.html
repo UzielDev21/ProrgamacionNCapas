@@ -114,7 +114,7 @@
                                 </div>
 
                                 <div>
-                                    <a href="" class ="btn btn-outline-danger">
+                                    <a th:href="@{/UsuarioIndex/DeleteUsuario/{id}(id=${Usuario.IdUsuario})}" class ="btn btn-outline-danger">
                                         Eliminar
                                     </a>
                                 </div>
@@ -152,6 +152,22 @@
             Swal.fire({
                 title: [[${successMessage}]],
                 icon: "success",
+                draggable: true
+            });
+        </script>
+
+        <script th:if="${MsgDeleteSuccess}" th:inline="javascript">
+            Swal.fire({
+                title: [[${MsgDeleteSuccess}]],
+                icon: "success",
+                draggable: true
+            });
+        </script>
+
+        <script th:if="${MsgDeleteError}" th:inline="javascript">
+            Swal.fire({
+                title: [[${MsgDeleteError}]],
+                icon: "error",
                 draggable: true
             });
         </script>
